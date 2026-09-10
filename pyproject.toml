@@ -1,0 +1,66 @@
+[project]
+name = "rubriq"
+version = "0.1.0"
+description = "루브릭 기반 영어 Writing 자동 평가 Agent"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.9",
+    "pydantic-settings>=2.5",
+    "langgraph>=0.2",
+    "langchain-core>=0.3",
+    "langfuse>=2.50",
+    "openai>=1.50",
+    "anthropic>=0.40",
+    "psycopg[binary]>=3.2",
+    "pgvector>=0.3",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "numpy>=2.0",
+    "scikit-learn>=1.5",       # QWK (cohen_kappa_score, weights="quadratic")
+    "language-tool-python>=2.8",
+    "httpx>=0.27",
+    "typer>=0.13",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.7",
+    "mypy>=1.13",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+# eval은 평가 하네스. 제품 코드(rubriq)와 분리해 두되 스크립트에서 import 가능해야 한다.
+packages = ["src/rubriq", "eval"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+# 회귀 테스트는 실제 LLM을 호출한다 → 기본 실행에서 제외
+addopts = "-m 'not regression'"
+markers = [
+    "regression: 골든셋 재평가. LLM 실호출·유료·느림. `-m regression`으로 명시 실행",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
+# sklearn은 py.typed 마커가 없다. 이 프로젝트 코드가 아니라 서드파티 문제이므로
+# 전역 완화 대신 해당 모듈만 무시한다.
+[[tool.mypy.overrides]]
+module = ["sklearn.*"]
+ignore_missing_imports = true

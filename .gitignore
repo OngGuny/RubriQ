@@ -1,0 +1,19 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+.DS_Store
+
+# 골든셋 원본은 라이선스 확인 후 커밋 여부 결정 (eval/golden/LICENSE.md 참조)
+eval/golden/raw/
+data/anchors/*.jsonl
+
+# 지원 맥락 문서 — 로컬 전용.
+# 여러 회사에 보여줄 공개 레포에 특정 회사명·면접 준비 답변이 들어가면 안 된다.
+docs/interview/
+docs/00-기획서.md
+CLAUDE.local.md

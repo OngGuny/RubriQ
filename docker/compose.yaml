@@ -1,0 +1,56 @@
+# RubriQ 로컬 인프라 — postgres(pgvector) + Langfuse
+#   docker compose -f docker/compose.yaml up -d
+#   Langfuse UI: http://localhost:${LANGFUSE_PORT:-3001}  (첫 접속 시 계정 생성 → 키 발급 → .env 기입)
+#   pgvector:    postgresql://rubriq:rubriq@localhost:${POSTGRES_PORT:-5432}/rubriq
+#
+# 포트가 다른 프로젝트와 겹치면 .env 에서 LANGFUSE_PORT / POSTGRES_PORT 만 바꾼다.
+# (Langfuse 기본값이 3001인 이유: 3000은 Grafana 등이 흔히 선점한다)
+
+name: rubriq
+
+x-pg-env: &pg-env
+  POSTGRES_USER: rubriq
+  POSTGRES_PASSWORD: rubriq
+
+services:
+  # 앵커 에세이 벡터 검색용. Langfuse도 이 인스턴스의 별도 DB를 쓴다.
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      <<: *pg-env
+      POSTGRES_DB: rubriq
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rubriq -d rubriq"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  # 트레이싱 + 프롬프트 버전 관리. self-host라 무료.
+  langfuse:
+    image: langfuse/langfuse:2
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${LANGFUSE_PORT:-3001}:3000"
+    environment:
+      DATABASE_URL: postgresql://rubriq:rubriq@postgres:5432/langfuse
+      NEXTAUTH_URL: http://localhost:${LANGFUSE_PORT:-3001}
+      # 로컬 전용 시크릿. 외부에 노출할 일이 생기면 반드시 재생성한다.
+      #   NEXTAUTH_SECRET / SALT: openssl rand -base64 32
+      #   ENCRYPTION_KEY:         openssl rand -hex 32   (정확히 64자 hex, 0으로만 채우면 거부됨)
+      NEXTAUTH_SECRET: ${LANGFUSE_NEXTAUTH_SECRET:-local-dev-secret-change-me}
+      SALT: ${LANGFUSE_SALT:-local-dev-salt-change-me}
+      ENCRYPTION_KEY: ${LANGFUSE_ENCRYPTION_KEY:-3bac3e3f1fe8df4029a75ac4d4db9a2472f03261781e756f80c2403d17e508aa}
+      TELEMETRY_ENABLED: "false"
+      LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES: "true"
+
+volumes:
+  pgdata:
