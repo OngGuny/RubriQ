@@ -15,11 +15,12 @@
 ```bash
 uv sync
 cp .env.example .env                            # 키 채우기
-docker compose -f docker/compose.yaml up -d     # pgvector(:5432), Langfuse(:3001)
+docker compose -f docker/compose.yaml up -d     # pgvector(:5432), Langfuse v4(:3001)
 uv run pytest tests/unit
 ```
 
-Langfuse UI: http://localhost:3001 — 첫 접속 시 계정을 만들고 프로젝트 키를 발급받아 `.env`에 넣습니다.
+Langfuse UI: http://localhost:3001 — 헤드리스 초기화로 계정·프로젝트·API 키가 기동 시 자동 생성됩니다
+(`dev@rubriq.local` / `rubriq-local-dev`). `.env.example`의 키를 그대로 쓰면 됩니다.
 포트가 다른 프로젝트와 겹치면 `.env`의 `LANGFUSE_PORT` / `POSTGRES_PORT`만 바꾸면 됩니다.
 
 ## 설계
