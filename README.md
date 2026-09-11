@@ -35,6 +35,8 @@ Langfuse UI: http://localhost:3001 — 첫 접속 시 계정을 만들고 프로
 ```
 
 설계 근거와 트레이드오프는 [`docs/00-설계.md`](docs/00-설계.md) §1과 [`docs/adr/`](docs/adr/)에 있습니다.
+기능 단위 기획은 [`docs/features/`](docs/features/)에 17개 문서로 정리했습니다 —
+각각 **문제 → 계약 → 설계 → 핵심 결정 → 실패 모드 → 측정** 형식입니다.
 
 ## 측정
 
