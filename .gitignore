@@ -8,8 +8,12 @@ __pycache__/
 *.egg-info/
 .DS_Store
 
-# 골든셋 원본은 라이선스 확인 후 커밋 여부 결정 (eval/golden/LICENSE.md 참조)
+# 골든셋은 ELLIPSE 코퍼스 파생물이고 원문이 CC BY-NC-SA 4.0 이다.
+# ShareAlike 조항 때문에 이 저장소(라이선스 미지정 public)에 재배포할 수 없다.
+# 재현은 scripts/build_golden_set.py 로 한다 — 원본만 있으면 같은 셋이 나온다.
+# 자세한 근거: eval/golden/LICENSE.md
 eval/golden/raw/
+eval/golden/*.jsonl
 data/anchors/*.jsonl
 
 # 지원 맥락 문서 — 로컬 전용.
