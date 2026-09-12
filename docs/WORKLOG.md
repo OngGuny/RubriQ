@@ -68,3 +68,9 @@
 
 **가장 큰 미해결 리스크**: 루브릭 정합성 미검증 ([ADR 001](adr/001-루브릭-서술어는-골든셋-출처를-따른다.md)).
 골든셋을 받으면 원본 루브릭 대조가 **첫 작업**이다.
+
+## 2026-09-12 — 작업 로그 규칙 · Kaggle 인증
+
+- **한 것**: `docs/WORKLOG.md` 신설(이 파일). Kaggle 인증 완료 — 새 CLI(2.2.4)는 `KGAT_` 토큰을 `~/.kaggle/access_token`에 넣는 방식이고, 기존 `kaggle.json`(username+key)과 다르다. `scripts/build_golden_set.py` 작성(층화추출 + round-half-up + 정수전용 부분집합).
+- **막힌 것**: **대회 규정 미동의**로 다운로드 403. 파일 목록은 보이는데 받기가 막힌다 (`userHasEntered: False`). 사용자가 [규정 페이지](https://www.kaggle.com/competitions/feedback-prize-english-language-learning/rules)에서 `I Understand and Accept`를 눌러야 한다 — 법적 합의라 대신 처리하지 않는다.
+- **다음**: 규정 동의 → 다운로드 → `build_golden_set.py` 실행 → LICENSE.md 기입 → 루브릭 원본 대조(ADR 001) → 베이스라인 실측.
