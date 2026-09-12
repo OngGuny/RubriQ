@@ -57,6 +57,7 @@ docs/
   00-설계.md     범위·근거·계획 (SSOT)
   01-루브릭.md   채점 기준 — 프롬프트의 원본. **원본 대조 전까지 미검증 상태**
   WORKLOG.md     작업 이력 — 작업이 끝날 때마다 append. 다음 세션의 출발점
+  COSTS.md       💰 과금되는 행동 전부와 차단 장치
   learning/      학습노트 — 처음 만난 개념 정리. 모르는 단어가 나오면 여기에 추가한다
   adr/           설계 결정 기록 — 맥락/선택지/결정/트레이드오프
   results/       측정 결과 before/after 표
@@ -102,16 +103,28 @@ docker/          compose.yaml (postgres+pgvector, Langfuse) · Dockerfile
 ```bash
 uv sync                          # 의존성 설치
 docker compose -f docker/compose.yaml up -d   # postgres+pgvector(:5432), Langfuse(:3001)
-uv run pytest tests/unit          # 빠른 단위 테스트
-uv run pytest tests/regression    # 골든셋 회귀 (LLM 호출, 느림·유료)
-uv run python scripts/run_eval.py --set eval/golden/ellipse-50.jsonl
+uv run pytest                     # 단위 테스트 — LLM 호출 없음
+uv run python scripts/run_eval.py --set eval/golden/ellipse-50.jsonl --dry-run   # 비용만
+uv run python scripts/run_eval.py --set eval/golden/ellipse-50.jsonl --limit 5   # 💰
+RUBRIQ_ALLOW_PAID=1 uv run pytest -m regression                                  # 💰
 uv run ruff check . && uv run ruff format .
 ```
 
+## 💰 과금되는 행동 — 물어보고 나서 실행한다
+
+과금 경로는 둘뿐이다: `scripts/run_eval.py`, `pytest -m regression`.
+전체 목록과 차단 장치는 `docs/COSTS.md`.
+
+**새로 과금 경로를 만들면 반드시 게이트를 붙인다** — `eval/preflight.confirm_or_abort`.
+게이트 없는 유료 경로를 추가하지 않는다. 특히 F12 앵커 적재(임베딩 API)가 해당된다.
+
+사용자에게 유료 실행을 제안할 때는 **먼저 `--dry-run`으로 비용을 보여주고 확인을 받는다.**
+"돌려볼까요?"가 아니라 "$N 들고 M분 걸립니다. 돌릴까요?"로 묻는다.
+
 ## 컨벤션
 
-- **비용 주의**: `tests/regression`은 실제 LLM을 호출한다. `-m regression` 마커로 분리하고
-  기본 `pytest` 실행에는 포함하지 않는다. 반복 실행 전에 골든셋 크기를 확인할 것.
+- **비용 주의**: `tests/regression`은 실제 LLM을 호출한다. `-m regression` 마커로 분리하고,
+  추가로 `RUBRIQ_ALLOW_PAID=1` 오프트인이 없으면 skip 한다.
 - **프롬프트는 코드에 하드코딩하지 않는다.** `src/rubriq/prompts/templates/`에 두고
   Langfuse에 버전 등록한다. 프롬프트를 고치면 버전을 올리고 재측정한다.
 - **시크릿은 `.env`.** `.env.example`만 커밋한다. 실제 키는 절대 커밋 금지.

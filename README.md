@@ -19,7 +19,23 @@
 uv sync
 cp .env.example .env                            # 키 채우기
 docker compose -f docker/compose.yaml up -d     # pgvector(:5432), Langfuse v4(:3001)
-uv run pytest tests/unit
+uv run pytest                                   # 단위 테스트 — LLM 호출 없음
+```
+
+### 💰 과금되는 명령
+
+과금 경로는 두 개뿐이고 둘 다 실행 전에 막혀 있습니다 — 자세한 내용은
+[`docs/COSTS.md`](docs/COSTS.md).
+
+```bash
+# 0원 — 비용만 확인 (API 키도 필요 없음)
+uv run python scripts/run_eval.py --set eval/golden/ellipse-50.jsonl --dry-run
+
+# 💰 유료 — 비용 추정을 보여주고 확인을 받습니다
+uv run python scripts/run_eval.py --set eval/golden/ellipse-50.jsonl --limit 5
+
+# 💰 유료 — RUBRIQ_ALLOW_PAID=1 없이는 skip 됩니다
+RUBRIQ_ALLOW_PAID=1 uv run pytest -m regression
 ```
 
 Langfuse UI: http://localhost:3001 — 헤드리스 초기화로 계정·프로젝트·API 키가 기동 시 자동 생성됩니다
