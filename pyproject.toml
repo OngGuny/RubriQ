@@ -51,6 +51,9 @@ markers = [
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+# 마크다운 안의 코드 블록은 설명용 예시다. 의도적으로 맞춘 정렬을 포매터가 깨면
+# 문서 가독성이 떨어진다. 린트·포맷 대상에서 제외한다.
+extend-exclude = ["*.md"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
