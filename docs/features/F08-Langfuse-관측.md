@@ -9,6 +9,9 @@
 | 인프라 | `docker/compose.yaml` — Langfuse v4 (web · worker · postgres · clickhouse · redis · minio) |
 | 관련 | ADR 004 |
 
+> 트레이싱이 **무엇인지**는 [`docs/learning/05-트레이싱과-Langfuse.md`](../learning/05-트레이싱과-Langfuse.md) 참조.
+> 이 문서는 개념 설명이 아니라 **이 프로젝트에서 어떻게 구현했는가**다.
+
 ## 문제
 
 숫자가 나빠졌을 때 **어디서 무너졌는지** 알아야 한다.

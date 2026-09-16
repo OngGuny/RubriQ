@@ -34,20 +34,20 @@
 | Precision / Recall / F1 | | 미작성 |
 | CEFR / ESL / L1 간섭 | 영어 교육 도메인 용어 | 미작성 |
 
-### Agent · LLM (T1~T2에서 쓸 것)
+### Agent · LLM
 
 | 개념 | 한 줄 | 상태 |
 |---|---|---|
-| LangGraph와 상태 그래프 | | 미작성 |
-| 트레이싱과 Langfuse | | 미작성 |
-| 프롬프트 버저닝 | | 미작성 |
-| 구조화 출력 (Structured Output) | | 미작성 |
-| 프롬프트 캐싱 | | 미작성 |
-| 모델 라우팅 | | 미작성 |
+| [트레이싱과 Langfuse](05-트레이싱과-Langfuse.md) | 다시 돌려볼 수 없는 것을 기록해두는 일 | ✅ |
+| 구조화 출력 (Structured Output) | 이미 쓰고 있다 — `messages.parse` | 미작성 |
+| 프롬프트 버저닝 | 이미 쓰고 있다 — 버전 + 내용 지문 | 미작성 |
+| 프롬프트 캐싱 | 이미 쓰고 있다 — 캐시 경계 마커 | 미작성 |
 | temperature와 비결정성 | | 미작성 |
-| self-consistency | | 미작성 |
-| 임베딩 / 벡터 검색 / pgvector | | 미작성 |
-| RAG | | 미작성 |
+| LangGraph와 상태 그래프 | T1 | 미작성 |
+| 임베딩 / 벡터 검색 / pgvector | T1 (앵커 검색) | 미작성 |
+| RAG | T1 | 미작성 |
+| 모델 라우팅 | T2 | 미작성 |
+| self-consistency | 보류 — 비용 3배 | 미작성 |
 
 ### 엔지니어링
 
